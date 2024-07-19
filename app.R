@@ -5,7 +5,11 @@ library(tidyverse)
 library(rms)
 
 z_score <- read.csv("data/z_scores_validated_id.csv", header = TRUE)
-norm_counts <- read.csv("data/norm_counts_validated_id.csv", header = TRUE)
+norm_1 <- read.csv("data/norm_counts_1.csv", header = TRUE)
+norm_2 <- read.csv("data/norm_counts_2.csv", header = TRUE)
+norm_3 <- read.csv("data/norm_counts_3.csv", header = TRUE)
+
+norm_counts <- rbind(norm_1, norm_2, norm_3)
 
 norm_counts <- norm_counts %>% arrange(sp)
 
