@@ -17,7 +17,7 @@ ui <- page_sidebar(
   title = "Gene Trajectories",
   sidebar = sidebar(
     helpText(
-      "IDs validated with FlyBase version FB2024_03"
+      "IDs validated with FlyBase version FB2024_03 on July 19th, 2024"
     ),
     helpText(
       "If Gene Symbol has special characters, use FBgn Number."
