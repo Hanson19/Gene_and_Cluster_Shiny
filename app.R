@@ -5,17 +5,26 @@ library(tidyverse)
 library(rms)
 
 z_score <- read.csv("data/z_scores_validated_id.csv", header = TRUE)
+YvO <- read.csv("data/YvO_identified_genes.csv", header = TRUE)
+shared_genes <- read.csv("data/Shared_Genes_Validated.csv", header = TRUE)
+shared_genes <- shared_genes[-c(1)]
+
+#norm_counts <- read.csv("data/norm_counts_validated_id.csv", header = TRUE)
 norm_1 <- read.csv("data/norm_counts_1.csv", header = TRUE)
 norm_2 <- read.csv("data/norm_counts_2.csv", header = TRUE)
 norm_3 <- read.csv("data/norm_counts_3.csv", header = TRUE)
 
 norm_counts <- rbind(norm_1, norm_2, norm_3)
-
 norm_counts <- norm_counts %>% arrange(sp)
 
 ui <- page_sidebar(
   title = "Gene Trajectories",
   sidebar = sidebar(
+    helpText(
+      "Aftering typing in a gene's symbol or FBgn number the app will inform whether the gene was identified in our anlyses, plot the gene's cluster's expression trajectories with a representive curve,
+      plot the individual gene's expression trajectory with all sampling point and normalized read counts, inform if the gene was identified in our Young vs Old Analysis, and
+      list the published Young vs Old studies used in our paper that the gene was identified in.  "
+    ),
     helpText(
       "IDs validated with FlyBase version FB2024_03 on July 19th, 2024"
     ),
@@ -38,7 +47,9 @@ ui <- page_sidebar(
   ),
   card(textOutput("Id_status")),
   card(plotOutput("clus_plot")),
-  card(plotOutput("gene_plot"))
+  card(plotOutput("gene_plot")),
+  card(textOutput("YvO_status")),
+  card(tableOutput("Paper_ID"))
 )
 
 server <- function(input, output){
@@ -106,15 +117,70 @@ server <- function(input, output){
       z_score_report <- FALSE
     }
     
+    if(z_score_report){
+      gene_id <- z_score %>% filter(validated_id == input$gene_id |current_symbol == input$gene_id) %>% pull(Analysis_ID)
+      surv_answer <- NULL
+      day_answer <- NULL
+      sp_answer <- NULL
+      if (grepl("S", gene_id)){
+        surv_answer <- "survival analysis"
+      }
+      if (grepl("D", gene_id)){
+        day_answer <- "day analysis"
+      }
+      if (grepl("P", gene_id)){
+        sp_answer <- "sampling point analysis."
+      }
+      
+      if(nchar(gene_id)== 3){
+        cmpt_answer <- paste(surv_answer,", ",day_answer, " and ", sp_answer, sep = "")
+      }else if (nchar(gene_id) == 1){
+        cmpt_answer <- paste(surv_answer, day_answer, sp_answer, sep = "")
+      }else if (nchar(gene_id) == 2 & grepl("P", gene_id)){
+        cmpt_answer <- paste(surv_answer, day_answer, " and ", sp_answer, sep = "")
+      }else if (nchar(gene_id) == 2 & grepl("S", gene_id)){
+        cmpt_answer <- paste(surv_answer, " and ", day_answer, sp_answer, sep = "")
+      }
+    }
+    
     if(z_score_report & norm_counts_report){
       z_scores_gene <- z_score %>% filter(validated_id == input$gene_id |current_symbol == input$gene_id)
-      paste(unique(z_scores_gene$current_symbol),"'s (", unique(z_scores_gene$validated_id),") expression chages with aging and is in ", unique(z_scores_gene$Official_ID),".",sep = "")
+      paste(unique(z_scores_gene$current_symbol),"'s (", unique(z_scores_gene$validated_id),") expression changes with aging and is in ", unique(z_scores_gene$Official_ID),"."," Identified in ",cmpt_answer,sep = "")
     }else if(z_score_report == FALSE & norm_counts_report){
       gene_counts_long <- norm_counts %>% filter(validated_id == input$gene_id |current_symbol == input$gene_id)
       paste(unique(gene_counts_long$current_symbol),"'s (", unique(gene_counts_long$validated_id),") expression does not significantly change with aging.", sep = "")
     }else if(Z_score_report == FALSE & norm_counts_report == FALSE){
       paste(input$gene_id, " was not identified in our analysis.", sep = "")
     }
+  })
+  
+  output$YvO_status <- renderText({
+    if(input$gene_id %in% YvO$validated_id | input$gene_id %in% YvO$current_symbol){
+      paste(YvO %>% filter(validated_id == input$gene_id | current_symbol == input$gene_id) %>% pull(current_symbol),
+            " (",YvO %>% filter(validated_id == input$gene_id | current_symbol == input$gene_id) %>% pull(validated_id),
+            ") was identified in our Young v Old Analysis.", sep = "")
+    }else{
+      paste(input$gene_id, " was not identified in our Young v Old Analysis.", sep = "")
+    }
+    
+  })
+  
+  # output$Paper_ID <- renderPrint({
+  #   if(input$gene_id %in% shared_genes$validated_id | input$gene_id %in% shared_genes$current_symbol){
+  #     specific_shared <- shared_genes %>% filter(validated_id == input$gene_id | current_symbol == input$gene_id)
+  #     for (r in 1:nrow(specific_shared)) {
+  #       print(paste(specific_shared[r,4], " (", specific_shared[r,2], ") was identified in ", specific_shared[r,1], "et al.",
+  #             specific_shared[r,5]," PMID:",specific_shared[r,6]," ",specific_shared[r,7],".",sep = ""))
+  #     }
+  #   }
+  # })
+  
+  output$Paper_ID <- renderTable({
+    if(input$gene_id %in% shared_genes$validated_id | input$gene_id %in% shared_genes$current_symbol){
+      specific_shared <- shared_genes %>% filter(validated_id == input$gene_id | current_symbol == input$gene_id)
+      specific_shared
+    }
+    
   })
   
 }
