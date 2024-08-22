@@ -46,8 +46,15 @@ ui <- page_sidebar(
     )
   ),
   card(textOutput("Id_status")),
-  card(plotOutput("clus_plot")),
-  card(plotOutput("gene_plot")),
+  page_fillable(
+    layout_columns(
+      card(plotOutput("clus_plot")),
+      card(plotOutput("gene_plot"))
+    )
+  ),
+  # card(textOutput("Id_status")),
+  # card(plotOutput("clus_plot")),
+  c# ard(plotOutput("gene_plot")),
   card(textOutput("YvO_status")),
   card(tableOutput("Paper_ID"))
 )
