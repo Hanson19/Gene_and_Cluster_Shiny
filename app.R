@@ -125,7 +125,7 @@ server <- function(input, output){
     }
     
     if(z_score_report){
-      gene_id <- z_score %>% filter(validated_id == input$gene_id |current_symbol == input$gene_id) %>% pull(Analysis_ID)
+      gene_id <- unique(z_score %>% filter(validated_id == input$gene_id |current_symbol == input$gene_id) %>% pull(Analysis_ID))
       surv_answer <- NULL
       day_answer <- NULL
       sp_answer <- NULL
