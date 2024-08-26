@@ -45,18 +45,26 @@ ui <- page_sidebar(
       selected = "Day"
     )
   ),
-  card(textOutput("Id_status")),
-  page_fillable(
-    layout_columns(
-      card(plotOutput("clus_plot")),
-      card(plotOutput("gene_plot"))
-    )
-  ),
-  # card(textOutput("Id_status")),
-  # card(plotOutput("clus_plot")),
-  # card(plotOutput("gene_plot")),
-  card(textOutput("YvO_status")),
-  card(tableOutput("Paper_ID"))
+  fluidPage(
+    fluidRow(textOutput("Id_status")),
+    fluidRow(layout_columns(card(plotOutput("clus_plot")),
+                            card(plotOutput("gene_plot")))
+    ),
+    fluidRow(textOutput("YvO_status")),
+    fluidRow(tableOutput("Paper_ID"))
+  )
+  #card(textOutput("Id_status")),
+  #page_fillable(
+  #  layout_columns(
+  #    card(plotOutput("clus_plot")),
+  #    card(plotOutput("gene_plot"))
+  #  )
+  #),
+  ## card(textOutput("Id_status")),
+  ## card(plotOutput("clus_plot")),
+  ## card(plotOutput("gene_plot")),
+  #card(textOutput("YvO_status")),
+  #card(tableOutput("Paper_ID"))
 )
 
 server <- function(input, output){
