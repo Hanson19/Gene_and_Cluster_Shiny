@@ -167,7 +167,7 @@ server <- function(input, output){
             " (",YvO %>% filter(validated_id == input$gene_id | current_symbol == input$gene_id) %>% pull(validated_id),
             ") was identified in our Young v Old Analysis.", sep = "")
     }else{
-      paste(input$gene_id, " was not identified in our Young v Old Analysis.", sep = "")
+      paste(input$gene_id, " was not identified in our Young v Old Analysis. Double check spelling of your submitted gene to be sure.", sep = "")
     }
     
   })
