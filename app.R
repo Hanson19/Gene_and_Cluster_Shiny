@@ -157,7 +157,7 @@ server <- function(input, output){
       gene_counts_long <- norm_counts %>% filter(validated_id == input$gene_id |current_symbol == input$gene_id)
       paste(unique(gene_counts_long$current_symbol),"'s (", unique(gene_counts_long$validated_id),") expression does not significantly change with aging.", sep = "")
     }else if(z_score_report == FALSE & norm_counts_report == FALSE){
-      paste(input$gene_id, " was not identified in our analysis.", sep = "")
+      paste(input$gene_id, " was not identified in our analysis.\nCheck spelling of submitted ID to be sure.", sep = "")
     }
   })
   
@@ -167,7 +167,7 @@ server <- function(input, output){
             " (",YvO %>% filter(validated_id == input$gene_id | current_symbol == input$gene_id) %>% pull(validated_id),
             ") was identified in our Young v Old Analysis.", sep = "")
     }else{
-      paste(input$gene_id, " was not identified in our Young v Old Analysis. Double check spelling of your submitted gene to be sure.", sep = "")
+      paste(input$gene_id, " was not identified in our Young v Old Analysis.", sep = "")
     }
     
   })
