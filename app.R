@@ -156,7 +156,7 @@ server <- function(input, output){
     }else if(z_score_report == FALSE & norm_counts_report){
       gene_counts_long <- norm_counts %>% filter(validated_id == input$gene_id |current_symbol == input$gene_id)
       paste(unique(gene_counts_long$current_symbol),"'s (", unique(gene_counts_long$validated_id),") expression does not significantly change with aging.", sep = "")
-    }else if(Z_score_report == FALSE & norm_counts_report == FALSE){
+    }else if(z_score_report == FALSE & norm_counts_report == FALSE){
       paste(input$gene_id, " was not identified in our analysis.", sep = "")
     }
   })
