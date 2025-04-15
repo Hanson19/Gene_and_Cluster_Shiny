@@ -21,7 +21,7 @@ ui <- page_sidebar(
   title = "Gene Trajectories",
   sidebar = sidebar(
     helpText(
-      "Aftering typing in a gene's symbol or FBgn number the app will inform whether the gene was identified in our anlyses, plot the gene's cluster's expression trajectories with a representive curve,
+      "After typing in a gene's symbol or FBgn number the app will inform whether the gene was identified in our anlyses, plot the gene's cluster's expression trajectories with a representive curve,
       plot the individual gene's expression trajectory with all sampling point and normalized read counts, inform if the gene was identified in our Young vs Old Analysis, and
       list the published Young vs Old studies used in our paper that the gene was identified in.  "
     ),
